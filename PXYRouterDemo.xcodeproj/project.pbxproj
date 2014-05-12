@@ -21,6 +21,10 @@
 		4A345A50191BD98300E7DC5C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A345A32191BD98300E7DC5C /* UIKit.framework */; };
 		4A345A58191BD98300E7DC5C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4A345A56191BD98300E7DC5C /* InfoPlist.strings */; };
 		4A345A5A191BD98300E7DC5C /* PXYRouterDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A345A59191BD98300E7DC5C /* PXYRouterDemoTests.m */; };
+		4A345A66191BD9CC00E7DC5C /* PXYRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A345A65191BD9CC00E7DC5C /* PXYRouter.m */; };
+		4A345A67191BD9CC00E7DC5C /* PXYRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A345A65191BD9CC00E7DC5C /* PXYRouter.m */; };
+		4A345A6A191BDAC000E7DC5C /* PXYStory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A345A69191BDAC000E7DC5C /* PXYStory.m */; };
+		4A345A6B191BDAC000E7DC5C /* PXYStory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A345A69191BDAC000E7DC5C /* PXYStory.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +57,11 @@
 		4A345A55191BD98300E7DC5C /* PXYRouterDemoTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PXYRouterDemoTests-Info.plist"; sourceTree = "<group>"; };
 		4A345A57191BD98300E7DC5C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4A345A59191BD98300E7DC5C /* PXYRouterDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PXYRouterDemoTests.m; sourceTree = "<group>"; };
+		4A345A64191BD9CC00E7DC5C /* PXYRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PXYRouter.h; sourceTree = "<group>"; };
+		4A345A65191BD9CC00E7DC5C /* PXYRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PXYRouter.m; sourceTree = "<group>"; };
+		4A345A68191BDAC000E7DC5C /* PXYStory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PXYStory.h; sourceTree = "<group>"; };
+		4A345A69191BDAC000E7DC5C /* PXYStory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PXYStory.m; sourceTree = "<group>"; };
+		4A345A6C191BEA9700E7DC5C /* PXYStory+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PXYStory+Internal.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +91,7 @@
 		4A345A22191BD98300E7DC5C = {
 			isa = PBXGroup;
 			children = (
+				4A345A63191BD99500E7DC5C /* PXYRouter */,
 				4A345A34191BD98300E7DC5C /* PXYRouterDemo */,
 				4A345A53191BD98300E7DC5C /* PXYRouterDemoTests */,
 				4A345A2D191BD98300E7DC5C /* Frameworks */,
@@ -150,6 +160,18 @@
 				4A345A56191BD98300E7DC5C /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4A345A63191BD99500E7DC5C /* PXYRouter */ = {
+			isa = PBXGroup;
+			children = (
+				4A345A64191BD9CC00E7DC5C /* PXYRouter.h */,
+				4A345A65191BD9CC00E7DC5C /* PXYRouter.m */,
+				4A345A68191BDAC000E7DC5C /* PXYStory.h */,
+				4A345A69191BDAC000E7DC5C /* PXYStory.m */,
+				4A345A6C191BEA9700E7DC5C /* PXYStory+Internal.h */,
+			);
+			path = PXYRouter;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -250,7 +272,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A345A66191BD9CC00E7DC5C /* PXYRouter.m in Sources */,
 				4A345A3F191BD98300E7DC5C /* PXYAppDelegate.m in Sources */,
+				4A345A6A191BDAC000E7DC5C /* PXYStory.m in Sources */,
 				4A345A3B191BD98300E7DC5C /* main.m in Sources */,
 				4A345A45191BD98300E7DC5C /* PXYViewController.m in Sources */,
 			);
@@ -260,6 +284,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A345A67191BD9CC00E7DC5C /* PXYRouter.m in Sources */,
+				4A345A6B191BDAC000E7DC5C /* PXYStory.m in Sources */,
 				4A345A5A191BD98300E7DC5C /* PXYRouterDemoTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

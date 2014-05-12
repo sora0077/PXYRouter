@@ -8,11 +8,41 @@
 
 #import "PXYAppDelegate.h"
 
+#import "PXYRouter.h"
+
 @implementation PXYAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+
+    [PXYRouter routingOnWindow:self.window];
+
+    PXYStory *story = [PXYStory storyWithPattern:@"/modal/viewcontroller/:color"
+                                           segue:^(UIViewController *source, UIViewController *destination, BOOL animated) {
+                                               [source presentViewController:destination animated:animated completion:nil];
+                                           }
+                                          unwind:^(UIViewController *source, UIViewController *destination, BOOL animated) {
+                                              [destination dismissViewControllerAnimated:animated completion:nil];
+                                          }];
+//    [story waitUntilFinished:YES];
+    [[PXYRouter scheme:@"app"] addStory:story handler:^UIViewController *(NSURL *url, NSDictionary *params) {
+        UIViewController *viewController = [UIViewController new];
+        viewController.view.backgroundColor = [UIColor performSelector:NSSelectorFromString(params[@"color"])];
+        return viewController;
+    }];
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/blueColor"]
+                  animated:NO];
+//        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]];
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [PXYRouter pop];
+        });
+    });
+
+
     return YES;
 }
 							
