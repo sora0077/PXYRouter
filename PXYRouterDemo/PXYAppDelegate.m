@@ -34,10 +34,29 @@
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/blueColor"]
-                  animated:NO];
-//        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]];
+                  animated:YES];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/blueColor"]];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/blueColor"]];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/blueColor"]];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/blueColor"]];
 
+        
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [PXYRouter pop];
+
+            [PXYRouter pop];
+            [PXYRouter pop];
+            [PXYRouter pop];
+            [PXYRouter pop];
+            [PXYRouter pop];
+            [PXYRouter pop];
+            [PXYRouter pop];
+            [PXYRouter pop];
+            [PXYRouter pop];
             [PXYRouter pop];
         });
     });

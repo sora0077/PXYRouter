@@ -25,5 +25,6 @@ typedef void (^PXYStorySegueHandler)(UIViewController *source, UIViewController 
 + (instancetype)apiWithPattern:(NSString *)pattern;
 
 @property (nonatomic, readonly) NSString *pattern;
+@property (nonatomic, readonly) BOOL waitUntilFinished;
 
 @end

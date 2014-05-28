@@ -7,51 +7,119 @@
 //
 
 #import "PXYRouter.h"
+#import "PXYRouter+Internal.h"
 #import "PXYStory.h"
 #import "PXYStory+Internal.h"
+#import "UIViewController+PXYRouter.h"
+
+#import <Aspects/Aspects.h>
+
+
+typedef void (^PXYSegueCompletion)(PXYStory *stack);
+typedef BOOL (^PXYSegueHandler)(PXYStory *top, PXYStory *second, PXYSegueCompletion completion);
 
 static const NSString *const PXYStoryAnyPattern = @"__any__";
-static id _window;
+//static id _window;
 static void (^_popToRootBlock)(BOOL);
+
+
+@interface PXYRouterManager ()
+
+@property (nonatomic) NSMutableDictionary *routers;
+@property (nonatomic) NSMutableArray *stacks;
+@property (nonatomic) NSMutableArray *waitings;
+@property (nonatomic) BOOL segueing;
+@end
 
 @interface PXYRouter ()
 @property (nonatomic) NSString *scheme;
 @property (nonatomic) NSMutableDictionary *stories;
+@property (nonatomic) NSMutableArray *queue;
 @property (nonatomic) PXYStory *unresolvedStory;
 @property (nonatomic, copy) BOOL (^resolveURLHandler)(NSURL *);
+
 @end
 
+@implementation PXYRouterManager
+
++ (instancetype)sharedManager
+{
+    static id instance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [[self alloc] init];
+    });
+    return instance;
+}
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        _routers = @{}.mutableCopy;
+        _stacks = @[].mutableCopy;
+        _waitings = @[].mutableCopy;
+    }
+    return self;
+}
+
+- (PXYRouter *)routerWithScheme:(NSString *)scheme
+{
+    return self.routers[scheme];
+}
+
+- (void)addRouter:(PXYRouter *)router forScheme:(NSString *)scheme
+{
+    self.routers[scheme] = router;
+}
+
+- (void)addQueue:(PXYSegueHandler)next
+{
+    next = [next copy];
+    if (self.waitings.count == 0) {
+        [self performHandler:next];
+    }
+    [self.waitings addObject:next];
+}
+
+- (void)performHandler:(PXYSegueHandler)handler
+{
+    PXYStory *top = self.stacks.lastObject;
+    PXYStory *second = self.stacks.count > 1 ? [self.stacks objectAtIndex:self.stacks.count - 2] : nil;
+    self.segueing = YES;
+    handler(top, second, ^(PXYStory *story){
+        NSLog(@"did %@: %d", story ? @"segue" : @"unwind", self.waitings.count);
+        self.segueing = NO;
+
+        if (story) {
+            [self.stacks addObject:story];
+        } else {
+            [self.stacks removeLastObject];
+        }
+        if (self.waitings.count) {
+            PXYSegueHandler next = self.waitings.firstObject;
+            [self.waitings removeObjectAtIndex:0];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self performHandler:next];
+            });
+        }
+    });
+}
+
+- (BOOL)removeStory:(PXYStory *)story
+{
+    if ([self.stacks containsObject:story]) {
+        [self.stacks removeObject:story];
+        return YES;
+    }
+    return NO;
+}
+
+@end
+
+#pragma mark - PXYRouter
+
 @implementation PXYRouter
-
-+ (NSMutableDictionary *)routers
-{
-    static NSMutableDictionary *routers;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        routers = @{}.mutableCopy;
-    });
-    return routers;
-}
-
-+ (NSMutableArray *)stacks
-{
-    static NSMutableArray *stacks;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        stacks = @[].mutableCopy;
-    });
-    return stacks;
-}
-
-+ (void)setPopToRootBlock:(void (^)(BOOL))block
-{
-    _popToRootBlock = [block copy];
-}
-
-+ (void (^)(BOOL))popToRootBlock
-{
-    return _popToRootBlock;
-}
 
 + (instancetype)defaultScheme
 {
@@ -66,10 +134,10 @@ static void (^_popToRootBlock)(BOOL);
 
 + (instancetype)scheme:(NSString *)scheme
 {
-    PXYRouter *router = [self routers][scheme];
+    PXYRouter *router = [[PXYRouterManager sharedManager] routerWithScheme:scheme];
     if (!router) {
         router = [[self alloc] initWithScheme:scheme];
-        [self routers][scheme] = router;
+        [[PXYRouterManager sharedManager] addRouter:router forScheme:scheme];
     }
     return router;
 }
@@ -86,36 +154,13 @@ static void (^_popToRootBlock)(BOOL);
 
 + (void)routingOnWindow:(UIWindow *)window
 {
-    _window = window;
+    [[PXYRouterManager sharedManager].stacks addObject:[PXYStory firstStoryWithWindow:window]];
     NSParameterAssert(window.rootViewController);
-
-    __weak UIViewController *selectedController;
-    if ([window.rootViewController isKindOfClass:[UITabBarController class]]) {
-        UITabBarController *tabController = (id)window.rootViewController;
-        selectedController = tabController.selectedViewController;
-    }
-    [self setPopToRootBlock:^(BOOL animated) {
-        UIViewController *topViewController = [self window].rootViewController;
-        if ([topViewController isKindOfClass:[UINavigationController class]]) {
-            UINavigationController *navController = (id)topViewController;
-            [navController popToRootViewControllerAnimated:animated];
-        } else if ([topViewController isKindOfClass:[UITabBarController class]]) {
-            UITabBarController *tabController = (id)topViewController;
-            if ([tabController.viewControllers containsObject:selectedController]) {
-                [tabController setSelectedViewController:selectedController];
-            }
-        }
-    }];
-}
-
-+ (UIWindow *)window
-{
-    return _window;
 }
 
 + (BOOL)canOpenURL:(NSURL *)url
 {
-    PXYRouter *router = [[self class] routers][url.scheme];
+    PXYRouter *router = [[PXYRouterManager sharedManager] routerWithScheme:url.scheme];
 
     return [router canOpenURL:url];
 }
@@ -127,7 +172,7 @@ static void (^_popToRootBlock)(BOOL);
 
 + (void)openURL:(NSURL *)url animated:(BOOL)animated
 {
-    PXYRouter *router = [[self class] routers][url.scheme];
+    PXYRouter *router = [[PXYRouterManager sharedManager] routerWithScheme:url.scheme];
 
     [router openURL:url animated:animated];
 }
@@ -139,35 +184,42 @@ static void (^_popToRootBlock)(BOOL);
 
 + (void)pop:(BOOL)animated
 {
-    PXYStory *story = [self topStory];
-    if (story) {
-        UIViewController *source = story.sourceViewController;
-        UIViewController *destination = story.destinationViewController;
+
+    [[PXYRouterManager sharedManager] addQueue:^BOOL(PXYStory *top, PXYStory *second, PXYSegueCompletion completion) {
+        NSLog(@"unwind %d %d - %@ %@", [PXYRouterManager sharedManager].waitings.count, [PXYRouterManager sharedManager].stacks.count, top, second);
+        UIViewController *destination = second.destinationViewController;
+        [destination aspect_hookSelector:@selector(viewDidAppear:)
+                             withOptions:AspectPositionAfter | AspectOptionAutomaticRemoval
+                              usingBlock:^(id<AspectInfo> aspectInfo, BOOL animated) {
+                                  if (completion) {
+                                      completion(nil);
+                                  }
+                              }
+                                   error:NULL];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            story.unwind(source, destination, animated);
+            top.unwind(top.destinationViewController, destination, animated);
         });
-
-        [[self stacks] removeLastObject];
-    }
+        return YES;
+    }];
 }
 
 + (void)popToRoot:(BOOL)animated
 {
-    [[self stacks] removeAllObjects];
-    UIViewController *topViewController = [self stackedController];
-
-    if (topViewController.presentedViewController) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [topViewController dismissViewControllerAnimated:animated completion:nil];
-        });
-        animated = NO;
-    }
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        void (^popToRootBlock)(BOOL) = [self popToRootBlock];
-        popToRootBlock(animated);
-    });
+//    [[self stacks] removeAllObjects];
+//    UIViewController *topViewController = [self stackedController];
+//
+//    if (topViewController.presentedViewController) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [topViewController dismissViewControllerAnimated:animated completion:nil];
+//        });
+//        animated = NO;
+//    }
+//
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        void (^popToRootBlock)(BOOL) = [self popToRootBlock];
+//        popToRootBlock(animated);
+//    });
 }
 
 - (BOOL)canOpenURL:(NSURL *)url
@@ -185,13 +237,14 @@ static void (^_popToRootBlock)(BOOL);
 {
     PXYStory *story = [self storyForURL:url];
     NSDictionary *params = [story parametersForURL:url];
-    if (params) {
-        [self performSegueWithStory:story url:url parameters:params animated:animated];
-        return;
-    }
 
-    if (self.unresolvedStory) {
-        [self performSegueWithStory:self.unresolvedStory url:url parameters:params animated:YES];
+    if (params) {
+        PXYSegueHandler handler = [self prepareSegueWithStory:story url:url parameters:params animated:animated];
+        if (story.waitUntilFinished) {
+            [[PXYRouterManager sharedManager] addQueue:handler];
+        } else {
+            handler(nil, nil, nil);
+        }
     }
 }
 
@@ -222,54 +275,51 @@ static void (^_popToRootBlock)(BOOL);
     }
 }
 
-+ (PXYStory *)topStory
+- (PXYSegueHandler)prepareSegueWithStory:(PXYStory *)story url:(NSURL *)url parameters:(NSDictionary *)params animated:(BOOL)animated
 {
-    if ([self stacks].count) {
-        PXYStory *story = [self stacks].lastObject;
-        UIViewController *source = story.sourceViewController;
-        UIViewController *destination = story.destinationViewController;
-        BOOL isVisible = destination.isViewLoaded && destination.view.window;
-        if (source && destination && isVisible) {
-            return story;
-        } else {
-            [[self stacks] removeLastObject];
-            return [self topStory];
-        }
-    }
-    return nil;
+    return ^BOOL(PXYStory *top, PXYStory *second, PXYSegueCompletion completion) {
+        return [self performSegueWithStory:story
+                                        on:top
+                                       url:url
+                                parameters:params
+                                  animated:animated
+                                completion:completion];
+    };
 }
 
-+ (UIViewController *)stackedController
-{
-    PXYStory *story = [self topStory];
-    if (story) {
-        return story.destinationViewController;
-    }
-    return [self window].rootViewController;
-}
-
-- (BOOL)performSegueWithStory:(PXYStory *)story url:(NSURL *)url parameters:(NSDictionary *)params animated:(BOOL)animated
+- (BOOL)performSegueWithStory:(PXYStory *)story on:(PXYStory *)on url:(NSURL *)url parameters:(NSDictionary *)params animated:(BOOL)animated completion:(PXYSegueCompletion)completion
 {
     UIViewController *destination = story.handler(url, params);
     if (destination) {
+        NSLog(@"segue %ld %ld", [PXYRouterManager sharedManager].waitings.count, [PXYRouterManager sharedManager].stacks.count);
         NSParameterAssert(story.segue);
         NSParameterAssert(story.unwind);
-        UIViewController *source = [[self class] stackedController];
 
         PXYStory *stack = [story copy];
         stack.url = url;
         stack.destinationViewController = destination;
-        stack.sourceViewController = source;
+//        stack.sourceViewController = source;
+        stack.router = self;
+
+        destination.pxy_story = stack;
+        [destination aspect_hookSelector:@selector(viewDidAppear:)
+                             withOptions:AspectPositionAfter | AspectOptionAutomaticRemoval
+                              usingBlock:^(id<AspectInfo> aspectInfo, BOOL animated) {
+                                  if (completion) {
+                                      completion(stack);
+                                  }
+                              }
+                                   error:NULL];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            story.segue(source, destination, animated);
+            stack.segue(on.destinationViewController, destination, animated);
         });
 
-        [[[self class] stacks] addObject:stack];
         return YES;
     }
     return NO;
 }
+
 
 - (PXYStory *)storyForURL:(NSURL *)url
 {

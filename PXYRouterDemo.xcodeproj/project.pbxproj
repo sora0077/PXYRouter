@@ -25,6 +25,9 @@
 		4A345A67191BD9CC00E7DC5C /* PXYRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A345A65191BD9CC00E7DC5C /* PXYRouter.m */; };
 		4A345A6A191BDAC000E7DC5C /* PXYStory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A345A69191BDAC000E7DC5C /* PXYStory.m */; };
 		4A345A6B191BDAC000E7DC5C /* PXYStory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A345A69191BDAC000E7DC5C /* PXYStory.m */; };
+		4AE7FB491925226A00F0DCB6 /* UIViewController+PXYRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AE7FB481925226A00F0DCB6 /* UIViewController+PXYRouter.m */; };
+		4AE7FB4A1925226A00F0DCB6 /* UIViewController+PXYRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AE7FB481925226A00F0DCB6 /* UIViewController+PXYRouter.m */; };
+		61624899945B4F37B10DAF88 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF0BAC40721547D1B79BAC99 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +65,11 @@
 		4A345A68191BDAC000E7DC5C /* PXYStory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PXYStory.h; sourceTree = "<group>"; };
 		4A345A69191BDAC000E7DC5C /* PXYStory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PXYStory.m; sourceTree = "<group>"; };
 		4A345A6C191BEA9700E7DC5C /* PXYStory+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PXYStory+Internal.h"; sourceTree = "<group>"; };
+		4AE7FB471925226A00F0DCB6 /* UIViewController+PXYRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+PXYRouter.h"; sourceTree = "<group>"; };
+		4AE7FB481925226A00F0DCB6 /* UIViewController+PXYRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+PXYRouter.m"; sourceTree = "<group>"; };
+		4AE7FB4B192D0B4500F0DCB6 /* PXYRouter+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PXYRouter+Internal.h"; sourceTree = "<group>"; };
+		4F7668B79AC1405093E29376 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		CF0BAC40721547D1B79BAC99 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +80,7 @@
 				4A345A31191BD98300E7DC5C /* CoreGraphics.framework in Frameworks */,
 				4A345A33191BD98300E7DC5C /* UIKit.framework in Frameworks */,
 				4A345A2F191BD98300E7DC5C /* Foundation.framework in Frameworks */,
+				61624899945B4F37B10DAF88 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +105,7 @@
 				4A345A53191BD98300E7DC5C /* PXYRouterDemoTests */,
 				4A345A2D191BD98300E7DC5C /* Frameworks */,
 				4A345A2C191BD98300E7DC5C /* Products */,
+				4F7668B79AC1405093E29376 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -115,6 +125,7 @@
 				4A345A30191BD98300E7DC5C /* CoreGraphics.framework */,
 				4A345A32191BD98300E7DC5C /* UIKit.framework */,
 				4A345A4D191BD98300E7DC5C /* XCTest.framework */,
+				CF0BAC40721547D1B79BAC99 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -167,9 +178,12 @@
 			children = (
 				4A345A64191BD9CC00E7DC5C /* PXYRouter.h */,
 				4A345A65191BD9CC00E7DC5C /* PXYRouter.m */,
+				4AE7FB4B192D0B4500F0DCB6 /* PXYRouter+Internal.h */,
 				4A345A68191BDAC000E7DC5C /* PXYStory.h */,
 				4A345A69191BDAC000E7DC5C /* PXYStory.m */,
 				4A345A6C191BEA9700E7DC5C /* PXYStory+Internal.h */,
+				4AE7FB471925226A00F0DCB6 /* UIViewController+PXYRouter.h */,
+				4AE7FB481925226A00F0DCB6 /* UIViewController+PXYRouter.m */,
 			);
 			path = PXYRouter;
 			sourceTree = "<group>";
@@ -181,9 +195,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4A345A5D191BD98300E7DC5C /* Build configuration list for PBXNativeTarget "PXYRouterDemo" */;
 			buildPhases = (
+				A0B027578B814F67B92B4629 /* Check Pods Manifest.lock */,
 				4A345A27191BD98300E7DC5C /* Sources */,
 				4A345A28191BD98300E7DC5C /* Frameworks */,
 				4A345A29191BD98300E7DC5C /* Resources */,
+				90077A4EDFEA474B9DFAABBA /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -267,6 +283,39 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		90077A4EDFEA474B9DFAABBA /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A0B027578B814F67B92B4629 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		4A345A27191BD98300E7DC5C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -277,6 +326,7 @@
 				4A345A6A191BDAC000E7DC5C /* PXYStory.m in Sources */,
 				4A345A3B191BD98300E7DC5C /* main.m in Sources */,
 				4A345A45191BD98300E7DC5C /* PXYViewController.m in Sources */,
+				4AE7FB491925226A00F0DCB6 /* UIViewController+PXYRouter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,6 +335,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A345A67191BD9CC00E7DC5C /* PXYRouter.m in Sources */,
+				4AE7FB4A1925226A00F0DCB6 /* UIViewController+PXYRouter.m in Sources */,
 				4A345A6B191BDAC000E7DC5C /* PXYStory.m in Sources */,
 				4A345A5A191BD98300E7DC5C /* PXYRouterDemoTests.m in Sources */,
 			);
@@ -400,12 +451,14 @@
 		};
 		4A345A5E191BD98300E7DC5C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4F7668B79AC1405093E29376 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PXYRouterDemo/PXYRouterDemo-Prefix.pch";
 				INFOPLIST_FILE = "PXYRouterDemo/PXYRouterDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -413,12 +466,14 @@
 		};
 		4A345A5F191BD98300E7DC5C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4F7668B79AC1405093E29376 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PXYRouterDemo/PXYRouterDemo-Prefix.pch";
 				INFOPLIST_FILE = "PXYRouterDemo/PXYRouterDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -483,6 +538,7 @@
 				4A345A5F191BD98300E7DC5C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4A345A60191BD98300E7DC5C /* Build configuration list for PBXNativeTarget "PXYRouterDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -491,6 +547,7 @@
 				4A345A62191BD98300E7DC5C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
