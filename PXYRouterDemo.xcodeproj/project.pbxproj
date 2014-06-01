@@ -27,6 +27,8 @@
 		4A345A6B191BDAC000E7DC5C /* PXYStory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A345A69191BDAC000E7DC5C /* PXYStory.m */; };
 		4AE7FB491925226A00F0DCB6 /* UIViewController+PXYRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AE7FB481925226A00F0DCB6 /* UIViewController+PXYRouter.m */; };
 		4AE7FB4A1925226A00F0DCB6 /* UIViewController+PXYRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AE7FB481925226A00F0DCB6 /* UIViewController+PXYRouter.m */; };
+		4AE7FB54193B858700F0DCB6 /* PXYRouter.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 4AE7FB53193B858700F0DCB6 /* PXYRouter.podspec */; };
+		4AE7FB55193B858700F0DCB6 /* PXYRouter.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 4AE7FB53193B858700F0DCB6 /* PXYRouter.podspec */; };
 		61624899945B4F37B10DAF88 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF0BAC40721547D1B79BAC99 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +70,7 @@
 		4AE7FB471925226A00F0DCB6 /* UIViewController+PXYRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+PXYRouter.h"; sourceTree = "<group>"; };
 		4AE7FB481925226A00F0DCB6 /* UIViewController+PXYRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+PXYRouter.m"; sourceTree = "<group>"; };
 		4AE7FB4B192D0B4500F0DCB6 /* PXYRouter+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PXYRouter+Internal.h"; sourceTree = "<group>"; };
+		4AE7FB53193B858700F0DCB6 /* PXYRouter.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PXYRouter.podspec; sourceTree = SOURCE_ROOT; };
 		4F7668B79AC1405093E29376 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		CF0BAC40721547D1B79BAC99 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -133,6 +136,7 @@
 		4A345A34191BD98300E7DC5C /* PXYRouterDemo */ = {
 			isa = PBXGroup;
 			children = (
+				4AE7FB53193B858700F0DCB6 /* PXYRouter.podspec */,
 				4A345A3D191BD98300E7DC5C /* PXYAppDelegate.h */,
 				4A345A3E191BD98300E7DC5C /* PXYAppDelegate.m */,
 				4A345A40191BD98300E7DC5C /* Main.storyboard */,
@@ -270,6 +274,7 @@
 				4A345A47191BD98300E7DC5C /* Images.xcassets in Resources */,
 				4A345A39191BD98300E7DC5C /* InfoPlist.strings in Resources */,
 				4A345A42191BD98300E7DC5C /* Main.storyboard in Resources */,
+				4AE7FB54193B858700F0DCB6 /* PXYRouter.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +283,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A345A58191BD98300E7DC5C /* InfoPlist.strings in Resources */,
+				4AE7FB55193B858700F0DCB6 /* PXYRouter.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
