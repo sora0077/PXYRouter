@@ -22,12 +22,10 @@
 + (void)openURL:(NSURL *)url animated:(BOOL)animated;
 + (void)pop;
 + (void)pop:(BOOL)animated;
-+ (void)popToRoot:(BOOL)animated;
 
 
 - (void)openURL:(NSURL *)url;
-- (void)openURL:(NSURL *)url animated:(BOOL)animated;;
-- (void)pop;
+- (void)openURL:(NSURL *)url animated:(BOOL)animated;
 
 - (void)addStory:(PXYStory *)story handler:(UIViewController *(^)(NSURL *url, NSDictionary *params))handler;
 

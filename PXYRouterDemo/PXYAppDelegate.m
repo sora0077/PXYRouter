@@ -8,13 +8,37 @@
 
 #import "PXYAppDelegate.h"
 
+#import <Aspects/Aspects.h>
+
 #import "PXYRouter.h"
+#import "PXYRouter+Internal.h"
 
 @implementation PXYAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+
+    [(id)application.delegate aspect_hookSelector:@selector(applicationDidBecomeActive:)
+                         withOptions:AspectPositionAfter | AspectOptionAutomaticRemoval
+                          usingBlock:^(id<AspectInfo> aspectInfo, UIApplication *application) {
+                              NSLog(@"1");
+                          }
+                               error:NULL];
+
+    [(id)application.delegate aspect_hookSelector:@selector(applicationDidBecomeActive:)
+                                      withOptions:AspectPositionAfter | AspectOptionAutomaticRemoval
+                          usingBlock:^(id<AspectInfo> aspectInfo, UIApplication *application) {
+                              NSLog(@"2");
+                          }
+                               error:NULL];
+
+    [(id)application.delegate aspect_hookSelector:@selector(applicationDidBecomeActive:)
+                                      withOptions:AspectPositionAfter | AspectOptionAutomaticRemoval
+                          usingBlock:^(id<AspectInfo> aspectInfo, UIApplication *application) {
+                              NSLog(@"3");
+                          }
+                               error:NULL];
 
     [PXYRouter routingOnWindow:self.window];
 
@@ -33,31 +57,39 @@
     }];
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/yellowColor"]
+                  animated:NO];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]
+                  animated:NO];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/blueColor"]];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]];
+        [PXYRouter pop:NO];
+        [PXYRouter pop:NO];
         [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/blueColor"]
-                  animated:YES];
-        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]];
-        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/blueColor"]];
-        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]];
-        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/blueColor"]];
-        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]];
-        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/blueColor"]];
-        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]];
+                  animated:NO];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]
+                  animated:NO];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/blueColor"]
+                  animated:NO];
+        [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/redColor"]
+                  animated:NO];
         [PXYRouter openURL:[NSURL URLWithString:@"app://modal/viewcontroller/blueColor"]];
 
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //            [PXYRouter pop];
 
-            [PXYRouter pop];
-            [PXYRouter pop];
-            [PXYRouter pop];
-            [PXYRouter pop];
-            [PXYRouter pop];
-            [PXYRouter pop];
-            [PXYRouter pop];
-            [PXYRouter pop];
-            [PXYRouter pop];
-            [PXYRouter pop];
+            [PXYRouter pop:NO];
+//            [PXYRouter pop:NO];
+//            [PXYRouter pop:NO];
+//            [PXYRouter pop:NO];
+//            [PXYRouter pop:NO];
+//            [PXYRouter pop:NO];
+//            [PXYRouter pop:NO];
+//            [PXYRouter pop:NO];
+
+            [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
+            }];
         });
     });
 

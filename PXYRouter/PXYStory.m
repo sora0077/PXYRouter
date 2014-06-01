@@ -10,10 +10,8 @@
 #import "PXYStory+Internal.h"
 
 #import "PXYRouter.h"
-#import "PXYRouter+Internal.h"
 
-
-@interface PXYFirstStory : PXYStory
+@interface PXYRootStory : PXYStory
 
 - (id)initWithWindow:(UIWindow *)window;
 @end
@@ -29,7 +27,7 @@
 
 + (PXYStory *)firstStoryWithWindow:(UIWindow *)window
 {
-    return [[PXYFirstStory alloc] initWithWindow:window];
+    return [[PXYRootStory alloc] initWithWindow:window];
 }
 
 + (instancetype)storyWithPattern:(NSString *)pattern segue:(PXYStorySegueHandler)segue unwind:(PXYStorySegueHandler)unwind
@@ -65,11 +63,6 @@
     return copy;
 }
 
-- (void)dealloc
-{
-    [[PXYRouterManager sharedManager] removeStory:self];
-}
-
 - (NSArray *)patternComponents
 {
     if (!_patternComponents) {
@@ -99,7 +92,7 @@
 @end
 
 
-@implementation PXYFirstStory
+@implementation PXYRootStory
 {
     UIWindow *_window;
 }

@@ -19,8 +19,6 @@ typedef void (^PXYSegueCompletion)(PXYStory *stack);
 typedef BOOL (^PXYSegueHandler)(PXYStory *top, PXYStory *second, PXYSegueCompletion completion);
 
 static const NSString *const PXYStoryAnyPattern = @"__any__";
-//static id _window;
-static void (^_popToRootBlock)(BOOL);
 
 
 @interface PXYRouterManager ()
@@ -39,6 +37,15 @@ static void (^_popToRootBlock)(BOOL);
 @property (nonatomic, copy) BOOL (^resolveURLHandler)(NSURL *);
 
 @end
+
+static void dispatch_async_main_queue(void (^block)(void))
+{
+    if ([NSThread isMainThread]) {
+        block();
+    } else {
+        dispatch_async(dispatch_get_main_queue(), block);
+    }
+}
 
 @implementation PXYRouterManager
 
@@ -76,10 +83,12 @@ static void (^_popToRootBlock)(BOOL);
 - (void)addQueue:(PXYSegueHandler)next
 {
     next = [next copy];
-    if (self.waitings.count == 0) {
+    [self.waitings addObject:next];
+    if (!self.segueing) {
+        PXYSegueHandler next = self.waitings.firstObject;
+        [self.waitings removeObjectAtIndex:0];
         [self performHandler:next];
     }
-    [self.waitings addObject:next];
 }
 
 - (void)performHandler:(PXYSegueHandler)handler
@@ -88,22 +97,27 @@ static void (^_popToRootBlock)(BOOL);
     PXYStory *second = self.stacks.count > 1 ? [self.stacks objectAtIndex:self.stacks.count - 2] : nil;
     self.segueing = YES;
     handler(top, second, ^(PXYStory *story){
-        NSLog(@"did %@: %d", story ? @"segue" : @"unwind", self.waitings.count);
-        self.segueing = NO;
-
         if (story) {
             [self.stacks addObject:story];
         } else {
-            [self.stacks removeLastObject];
+            [self.stacks removeObject:top];
         }
         if (self.waitings.count) {
             PXYSegueHandler next = self.waitings.firstObject;
             [self.waitings removeObjectAtIndex:0];
-            dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_async_main_queue(^{
+                self.segueing = NO;
                 [self performHandler:next];
             });
+        } else {
+            self.segueing = NO;
         }
     });
+}
+
+- (void)addStory:(PXYStory *)story
+{
+    [self.stacks addObject:story];
 }
 
 - (BOOL)removeStory:(PXYStory *)story
@@ -154,7 +168,7 @@ static void (^_popToRootBlock)(BOOL);
 
 + (void)routingOnWindow:(UIWindow *)window
 {
-    [[PXYRouterManager sharedManager].stacks addObject:[PXYStory firstStoryWithWindow:window]];
+    [[PXYRouterManager sharedManager] addStory:[PXYStory firstStoryWithWindow:window]];
     NSParameterAssert(window.rootViewController);
 }
 
@@ -184,42 +198,25 @@ static void (^_popToRootBlock)(BOOL);
 
 + (void)pop:(BOOL)animated
 {
-
     [[PXYRouterManager sharedManager] addQueue:^BOOL(PXYStory *top, PXYStory *second, PXYSegueCompletion completion) {
-        NSLog(@"unwind %d %d - %@ %@", [PXYRouterManager sharedManager].waitings.count, [PXYRouterManager sharedManager].stacks.count, top, second);
+        UIViewController *source = top.destinationViewController;
         UIViewController *destination = second.destinationViewController;
-        [destination aspect_hookSelector:@selector(viewDidAppear:)
-                             withOptions:AspectPositionAfter | AspectOptionAutomaticRemoval
-                              usingBlock:^(id<AspectInfo> aspectInfo, BOOL animated) {
-                                  if (completion) {
-                                      completion(nil);
-                                  }
-                              }
-                                   error:NULL];
+        [source aspect_hookSelector:@selector(viewDidDisappear:)
+                        withOptions:AspectPositionAfter | AspectOptionAutomaticRemoval
+                         usingBlock:^(id<AspectInfo> aspectInfo, BOOL animated) {
+                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                 if (completion) {
+                                     completion(nil);
+                                 }
+                             });
+                         }
+                              error:NULL];
 
-        dispatch_async(dispatch_get_main_queue(), ^{
-            top.unwind(top.destinationViewController, destination, animated);
+        dispatch_async_main_queue(^{
+            top.unwind(source, destination, animated);
         });
         return YES;
     }];
-}
-
-+ (void)popToRoot:(BOOL)animated
-{
-//    [[self stacks] removeAllObjects];
-//    UIViewController *topViewController = [self stackedController];
-//
-//    if (topViewController.presentedViewController) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [topViewController dismissViewControllerAnimated:animated completion:nil];
-//        });
-//        animated = NO;
-//    }
-//
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        void (^popToRootBlock)(BOOL) = [self popToRootBlock];
-//        popToRootBlock(animated);
-//    });
 }
 
 - (BOOL)canOpenURL:(NSURL *)url
@@ -291,30 +288,30 @@ static void (^_popToRootBlock)(BOOL);
 {
     UIViewController *destination = story.handler(url, params);
     if (destination) {
-        NSLog(@"segue %ld %ld", [PXYRouterManager sharedManager].waitings.count, [PXYRouterManager sharedManager].stacks.count);
         NSParameterAssert(story.segue);
         NSParameterAssert(story.unwind);
 
         PXYStory *stack = [story copy];
         stack.url = url;
         stack.destinationViewController = destination;
-//        stack.sourceViewController = source;
         stack.router = self;
 
         destination.pxy_story = stack;
         [destination aspect_hookSelector:@selector(viewDidAppear:)
                              withOptions:AspectPositionAfter | AspectOptionAutomaticRemoval
                               usingBlock:^(id<AspectInfo> aspectInfo, BOOL animated) {
-                                  if (completion) {
-                                      completion(stack);
-                                  }
+                                  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+
+                                      if (completion) {
+                                          completion(stack);
+                                      }
+                                  });
                               }
                                    error:NULL];
 
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async_main_queue(^{
             stack.segue(on.destinationViewController, destination, animated);
         });
-
         return YES;
     }
     return NO;

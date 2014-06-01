@@ -10,7 +10,23 @@
 #import "PXYStory.h"
 #import <objc/runtime.h>
 
+#import <Aspects/Aspects.h>
+#import "PXYRouter+Internal.h"
+
 @implementation UIViewController (PXYRouter)
+
++ (void)load
+{
+    [self aspect_hookSelector:NSSelectorFromString(@"dealloc")
+                  withOptions:AspectPositionBefore
+                   usingBlock:^(id<AspectInfo> aspectInfo) {
+                       UIViewController *viewController = [aspectInfo instance];
+                       if (viewController.pxy_story) {
+                           [[PXYRouterManager sharedManager] removeStory:viewController.pxy_story];
+                       }
+                   }
+                        error:NULL];
+}
 
 - (void)setPxy_story:(PXYStory *)pxy_story
 {
